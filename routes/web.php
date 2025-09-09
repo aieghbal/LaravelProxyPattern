@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CurrencyController;
 
+Route::get('/rates', [CurrencyController::class, 'index']);
 Route::get('/', function () {
     return view('welcome');
 });
