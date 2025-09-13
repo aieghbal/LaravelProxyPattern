@@ -1,12 +1,11 @@
-<div dir="rtl">
+# Proxy Design Pattern in Laravel (Real-World Example)
 
-# الگوی طراحی Proxy در لاراول (مثال واقعی)
+The Proxy pattern helps us add extra logic (such as caching, logging, or access control) before or after accessing a core service.
+In this example, we implement a Currency Rate Service.
+Without a Proxy, every request goes directly to the external API (costly and time-consuming).
+With a Proxy, we check the cache first, and if no data is found, we connect to the external API.
 
-الگوی **Proxy** به ما کمک می‌کند قبل یا بعد از دسترسی به یک سرویس اصلی، منطق اضافه‌ای (مثل کش کردن، لاگ گرفتن یا محدودیت دسترسی) اضافه کنیم. در این مثال ما یک **سرویس نرخ ارز** را پیاده‌سازی می‌کنیم. بدون Proxy، هر بار مستقیم به API درخواست می‌دهیم (هزینه و زمان زیاد). با Proxy، ابتدا **کش** بررسی می‌شود و در صورت نبود داده، به API خارجی متصل می‌شویم.
-
-</div>
-
-## Service اصلی (Real Subject)
+## Real Subject (Main Service)
 `app/Services/CurrencyService.php`
 ```php
 <?php
@@ -94,14 +93,14 @@ Route::get('/rates', [CurrencyController::class, 'index']);
 ```
 
 
-## تست
-* اجرای سرور لاراول:
+## Testing
+* Start the Laravel server:
 ```php
 php artisan serve
 ```
 
-* مرورگر → http://127.0.0.1:8000/rates
-* خروجی نمونه:
+* Visit in browser → http://127.0.0.1:8000/rates
+* Example output:
 ```php
 {
   "base": "USD",
@@ -113,13 +112,24 @@ php artisan serve
 ```
 
 
-### نکات
-* خطای cURL error 60 به دلیل مشکل گواهی SSL است. برای تست سریع، می‌توانید verify => false قرار دهید. برای محیط واقعی بهتر است فایل cacert.pem را به PHP معرفی کنید.
-* می‌توانید Proxy را برای کارهای دیگر مثل احراز هویت، Rate Limiting یا لاگ‌گیری نیز استفاده کنید.
-* در این مثال، از API رایگان priceto.day
+### Notes
 
-## نتیجه‌گیری
-* CurrencyService → سرویس اصلی برای گرفتن نرخ ارز.
-* CurrencyServiceProxy → واسطه برای کش کردن داده‌ها.
-* Controller → استفاده از Proxy به جای سرویس مستقیم.
-  با این الگو، می‌توانیم منطق اضافه را بدون دست زدن به کد اصلی سرویس مدیریت کنیم.
+The cURL error 60 occurs due to SSL certificate issues. For quick testing, you can set verify => false.
+For production, it’s better to configure PHP with a proper cacert.pem.
+
+The Proxy can also be used for tasks like authentication, rate limiting, or logging.
+
+In this example, we’re using the free API priceto.day.priceto.day
+
+## Conclusion
+
+CurrencyService → The main service for fetching currency rates.
+
+CurrencyServiceProxy → The intermediary for caching data.
+
+Controller → Uses the Proxy instead of accessing the service directly.
+
+With this pattern, we can manage additional logic without modifying the original service code.
+
+---
+[نسخه فارسی](./README.fa.md)
